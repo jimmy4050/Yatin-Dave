@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { Theme } from '../types';
 import ThemeToggle from './ThemeToggle';
+import Logo from './Logo';
 
 interface NavbarProps {
   theme: Theme;
@@ -13,21 +14,24 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Handle scroll state for navbar styling
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
+      
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (window.scrollY / totalHeight) * 100;
+      setScrollProgress(progress);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection Observer for Active Section Tracking (Scroll-Spy)
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '-10% 0px -70% 0px', // Detect section when it's near the top
+      rootMargin: '-20% 0px -60% 0px',
       threshold: 0,
     };
 
@@ -50,65 +54,43 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
     return () => observer.disconnect();
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const id = href.replace('#', '');
-    const element = document.getElementById(id);
-    
-    if (element) {
-      setIsOpen(false);
-      // Fallback for browsers that don't support scroll-padding or specific behaviors
-      const offset = 80; // Approximate navbar height
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      });
-
-      // Update URL hash without jumping
-      window.history.pushState(null, '', href);
-    }
+  const handleNavClick = (href: string) => {
+    setIsOpen(false);
   };
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-lg py-3' 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled || isOpen
+          ? 'bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-lg py-3' 
           : 'bg-transparent py-5'
       }`}
     >
+      <div 
+        id="scroll-progress"
+        className="absolute top-0 left-0 h-[3px] bg-medical-500 transition-transform duration-75 ease-out z-[60]"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <a 
-              href="#home" 
-              onClick={(e) => handleNavClick(e, '#home')}
-              className="flex items-center space-x-2 group"
-            >
-              <div className="w-10 h-10 bg-medical-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-medical-500/20 shadow-lg group-hover:scale-110 transition-transform">
-                YD
-              </div>
-              <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Dr. Yatin <span className="text-medical-600">Dave</span>
-              </span>
-            </a>
-          </div>
+          <a 
+            href="#home" 
+            onClick={() => handleNavClick('#home')}
+            className="flex-shrink-0"
+          >
+            <Logo />
+          </a>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-4">
+          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.href.replace('#', '');
               return (
                 <a
                   key={item.label}
                   href={item.href}
-                  onClick={(e) => handleNavClick(e, item.href)}
-                  className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95 ${
                     isActive 
                       ? 'text-medical-600 dark:text-medical-400 bg-medical-50 dark:bg-medical-900/20' 
                       : 'text-slate-600 dark:text-slate-300 hover:text-medical-600 dark:hover:text-medical-400'
@@ -116,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
                 >
                   {item.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-medical-600 dark:bg-medical-400 rounded-full"></span>
+                    <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-medical-600 dark:bg-medical-400 rounded-full"></span>
                   )}
                 </a>
               );
@@ -128,7 +110,6 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
             
             <a 
               href="#contact"
-              onClick={(e) => handleNavClick(e, '#contact')}
               className="ml-4 bg-medical-600 hover:bg-medical-700 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:scale-95"
             >
               Book Now
@@ -136,11 +117,11 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="md:hidden flex items-center space-x-4">
+          <div className="md:hidden flex items-center space-x-3">
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-600 dark:text-slate-300 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              className="text-slate-600 dark:text-slate-300 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all active:scale-90"
               aria-label="Toggle menu"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -151,32 +132,41 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
 
       {/* Mobile Nav Overlay */}
       <div 
-        className={`md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t dark:border-slate-800 transition-all duration-300 origin-top overflow-hidden ${
-          isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+        className={`md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 border-t dark:border-slate-800 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) overflow-hidden ${
+          isOpen ? 'max-h-[500px] opacity-100 shadow-2xl' : 'max-h-0 opacity-0 pointer-events-none'
         }`}
       >
-        <div className="px-4 pt-2 pb-8 space-y-1 flex flex-col items-center">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              onClick={(e) => handleNavClick(e, item.href)}
-              className={`block w-full py-4 text-center text-lg font-bold transition-colors rounded-xl ${
-                activeSection === item.href.replace('#', '')
-                  ? 'text-medical-600 dark:text-medical-400 bg-medical-50 dark:bg-medical-900/20'
-                  : 'text-slate-600 dark:text-slate-300'
-              }`}
+        <div className="px-6 py-8 flex flex-col space-y-2">
+          {NAV_ITEMS.map((item, index) => {
+            const isActive = activeSection === item.href.replace('#', '');
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={() => handleNavClick(item.href)}
+                className={`flex items-center justify-between p-4 rounded-2xl text-lg font-bold transition-all duration-300 transform ${
+                  isOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                } ${
+                  isActive
+                    ? 'text-medical-600 dark:text-medical-400 bg-medical-50 dark:bg-medical-900/20'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50'
+                }`}
+                style={{ transitionDelay: `${index * 50}ms` }}
+              >
+                {item.label}
+                {isActive && <div className="w-2 h-2 bg-medical-600 dark:bg-medical-400 rounded-full"></div>}
+              </a>
+            );
+          })}
+          <div className={`pt-4 transform transition-all duration-500 delay-300 ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <a 
+              href="#contact"
+              onClick={() => handleNavClick('#contact')}
+              className="block w-full bg-medical-600 text-white px-6 py-4 rounded-2xl font-black text-center shadow-lg shadow-medical-600/20 active:scale-95"
             >
-              {item.label}
+              Book Appointment
             </a>
-          ))}
-          <a 
-            href="#contact"
-            onClick={(e) => handleNavClick(e, '#contact')}
-            className="w-full mt-6 bg-medical-600 text-white px-6 py-4 rounded-2xl font-black text-center shadow-lg shadow-medical-600/20"
-          >
-            Book Appointment
-          </a>
+          </div>
         </div>
       </div>
     </nav>

@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { NAV_ITEMS, CONTACT_INFO, SOCIAL_LINKS } from '../constants';
 import { Heart } from 'lucide-react';
+import Logo from './Logo';
 
 const Footer: React.FC = () => {
   return (
@@ -9,14 +9,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-medical-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                YD
-              </div>
-              <span className="text-xl font-bold text-white tracking-tight">
-                Dr. Yatin Dave
-              </span>
-            </div>
+            <Logo light />
             <p className="leading-relaxed text-slate-500">
               Expert physiotherapy and rehabilitation services dedicated to restoring your mobility and helping you live a pain-free life.
             </p>
@@ -25,12 +18,11 @@ const Footer: React.FC = () => {
                 <a 
                   key={link.name} 
                   href={link.href}
-                  className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-medical-600 hover:text-white transition-all text-slate-400"
+                  className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-medical-600 hover:text-white transition-all text-slate-400 group"
                   aria-label={link.name}
                 >
                   <span className="sr-only">{link.name}</span>
-                  {/* Placeholder for social icons */}
-                  <div className="w-5 h-5 border border-current rounded-sm"></div>
+                  <div className="w-5 h-5 border border-current rounded-sm group-hover:scale-110 transition-transform"></div>
                 </a>
               ))}
             </div>
@@ -66,7 +58,7 @@ const Footer: React.FC = () => {
               <input 
                 type="email" 
                 placeholder="Email address" 
-                className="w-full bg-slate-800 border-none rounded-xl p-4 pr-12 focus:ring-1 focus:ring-medical-500 outline-none text-white"
+                className="w-full bg-slate-800 border-none rounded-xl p-4 pr-12 focus:ring-1 focus:ring-medical-500 outline-none text-white transition-all"
               />
               <button className="absolute right-2 top-2 bottom-2 bg-medical-600 px-4 rounded-lg text-white font-bold hover:bg-medical-700 transition-colors">
                 Join

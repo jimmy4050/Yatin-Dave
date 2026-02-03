@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import SectionHeading from './SectionHeading';
 import { CONTACT_INFO } from '../constants';
@@ -10,6 +9,7 @@ const Contact: React.FC = () => {
     name: '',
     email: '',
     phone: '',
+    subject: 'General Inquiry',
     message: ''
   });
 
@@ -19,11 +19,17 @@ const Contact: React.FC = () => {
     // Simulate API call
     setTimeout(() => {
       setFormState('success');
-      setFormData({ name: '', email: '', phone: '', message: '' });
+      setFormData({ 
+        name: '', 
+        email: '', 
+        phone: '', 
+        subject: 'General Inquiry', 
+        message: '' 
+      });
     }, 1500);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -172,11 +178,16 @@ const Contact: React.FC = () => {
                     
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Subject</label>
-                      <select className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl p-4 focus:ring-2 focus:ring-medical-500 outline-none transition-all text-slate-900 dark:text-white">
-                        <option>General Inquiry</option>
-                        <option>New Appointment</option>
-                        <option>Follow-up Visit</option>
-                        <option>Sports Injury Rehab</option>
+                      <select 
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
+                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl p-4 focus:ring-2 focus:ring-medical-500 outline-none transition-all text-slate-900 dark:text-white"
+                      >
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="New Appointment">New Appointment</option>
+                        <option value="Follow-up Visit">Follow-up Visit</option>
+                        <option value="Sports Injury Rehab">Sports Injury Rehab</option>
                       </select>
                     </div>
                     

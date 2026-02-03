@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth scroll-pt-24">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +14,21 @@
       }
       body {
         font-family: 'Inter', sans-serif;
+        -webkit-tap-highlight-color: transparent;
       }
-      .gradient-blur {
-        background: radial-gradient(circle at 50% 50%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
+      
+      /* Smooth Scroll Padding for Sticky Header */
+      :root {
+        scroll-padding-top: 5rem; /* Default for mobile */
       }
+      @media (min-width: 768px) {
+        :root {
+          scroll-padding-top: 6rem; /* Tablet/Desktop */
+        }
+      }
+
       ::-webkit-scrollbar {
-        width: 10px;
+        width: 8px;
       }
       ::-webkit-scrollbar-track {
         background: transparent;
@@ -27,17 +36,25 @@
       ::-webkit-scrollbar-thumb {
         background: #cbd5e1;
         border-radius: 10px;
-        border: 3px solid transparent;
+        border: 2px solid transparent;
         background-clip: content-box;
       }
       .dark ::-webkit-scrollbar-thumb {
         background: #334155;
-        border: 3px solid transparent;
-        background-clip: content-box;
       }
-      :focus-visible {
-        outline: 2px solid #4197a7;
-        outline-offset: 2px;
+      
+      section {
+        scroll-margin-top: 5rem;
+      }
+      @media (min-width: 768px) {
+        section {
+          scroll-margin-top: 6rem;
+        }
+      }
+
+      /* Progress bar animation */
+      #scroll-progress {
+        transform-origin: 0% 50%;
       }
     </style>
     <script>
@@ -77,7 +94,7 @@
 }
 </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 </body>
