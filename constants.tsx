@@ -51,9 +51,9 @@ export const STATS = [
 ];
 
 export const CONTACT_INFO = {
-  address: '123 Wellness Plaza, Medical District, City Center, 560001',
-  phone: '+91 98765 43210',
-  email: 'contact@dryatindave.com',
+  address: 'Plot No. 363, 1 & 364, Housing Sector, GIDC, Vapi, Chharwada, Gujarat 396191',
+  phone: '+91 98251 12345',
+  email: 'yatin.dave@physiotherapy.com',
   hours: 'Mon - Sat: 9:00 AM - 7:00 PM',
 };
 

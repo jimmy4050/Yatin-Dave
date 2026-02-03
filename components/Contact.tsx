@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import SectionHeading from './SectionHeading';
 import { CONTACT_INFO } from '../constants';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, ExternalLink } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
@@ -49,7 +49,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 dark:text-white mb-1">Our Location</h4>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{CONTACT_INFO.address}</p>
+                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">{CONTACT_INFO.address}</p>
                   </div>
                 </div>
                 
@@ -85,12 +85,24 @@ const Contact: React.FC = () => {
               </div>
             </div>
             
-            {/* Map Placeholder */}
-            <div className="h-64 bg-slate-200 dark:bg-slate-800 rounded-3xl overflow-hidden relative group">
-              <img src="https://picsum.photos/seed/map/600/400" className="w-full h-full object-cover opacity-50 grayscale" alt="Map" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <a href="#" className="bg-white dark:bg-slate-900 px-6 py-2 rounded-full font-bold shadow-lg hover:scale-110 transition-transform">
-                  View on Google Maps
+            {/* Live Map Integration */}
+            <div className="h-80 bg-slate-200 dark:bg-slate-800 rounded-3xl overflow-hidden relative border border-slate-100 dark:border-slate-800 group shadow-lg">
+              <iframe
+                title="Clinic Location Map"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(CONTACT_INFO.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                className="w-full h-full border-0 grayscale group-hover:grayscale-0 transition-all duration-700 contrast-[0.85] group-hover:contrast-100"
+                allowFullScreen
+                loading="lazy"
+              ></iframe>
+              <div className="absolute bottom-4 right-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">
+                <a 
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT_INFO.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-3 rounded-xl shadow-xl border border-white/20 flex items-center gap-2 text-xs font-bold text-medical-600 dark:text-medical-400 hover:bg-medical-600 hover:text-white transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Open Directions
                 </a>
               </div>
             </div>
